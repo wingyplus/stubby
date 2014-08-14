@@ -14,5 +14,5 @@ func Parse(reader io.Reader) ([]Stub, error) {
 	var stubs []Stub
 	err = yaml.Unmarshal(b, &stubs)
 
-	return stubs, err 
+	return stubs, err
 }

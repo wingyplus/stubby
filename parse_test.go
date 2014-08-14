@@ -13,7 +13,7 @@ func eq(t *testing.T, actual string, expected string) {
 
 func TestParseYAML(t *testing.T) {
 	var (
-		f, _      = os.Open("./testdata/helloworld.yaml")
+		f, _       = os.Open("./testdata/helloworld.yaml")
 		stubs, err = Parse(f)
 	)
 
