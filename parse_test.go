@@ -2,12 +2,13 @@ package stubby
 
 import (
 	"os"
+	"reflect"
 	"testing"
 )
 
-func eq(t *testing.T, actual string, expected string) {
-	if actual != expected {
-		t.Errorf("expect %s but was %s", expected, actual)
+func eq(t *testing.T, actual interface{}, expected interface{}) {
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("expect %v but was %v", expected, actual)
 	}
 }
 
@@ -21,6 +22,7 @@ func TestParseYAML(t *testing.T) {
 
 	testErrorMustNotNil(t, err)
 	testRequest(t, stubs[0].Request)
+	testResponse(t, stubs[0].Response)
 }
 
 func testErrorMustNotNil(t *testing.T, err error) {
@@ -30,6 +32,12 @@ func testErrorMustNotNil(t *testing.T, err error) {
 }
 
 func testRequest(t *testing.T, req Request) {
-	eq(req.Method, "GET")
-	eq(req.URL, "/hello-world")
+	eq(t, req.Method, "GET")
+	eq(t, req.URL, "/hello-world")
+}
+
+func testResponse(t *testing.T, res Response) {
+	eq(t, res.Status, 200)
+	eq(t, res.Headers, map[string]string{"content-type": "application/json"})
+	eq(t, res.Body, "hello world")
 }

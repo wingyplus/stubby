@@ -5,6 +5,13 @@ type Request struct {
 	URL    string
 }
 
+type Response struct {
+	Status  int
+	Headers map[string]string
+	Body    string
+}
+
 type Stub struct {
 	Request
+	Response
 }
