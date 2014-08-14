@@ -1,8 +1,8 @@
 package main
 
 import (
-	"testing"
 	"flag"
+	"testing"
 )
 
 func TestParseArgs(t *testing.T) {
