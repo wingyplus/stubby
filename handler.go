@@ -25,5 +25,9 @@ func NewMapHandler(stubs []Stub) http.Handler {
 }
 
 func (m mapHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	m[r.URL.Path].ServeHTTP(w, r)
+	if h, ok := m[r.URL.Path]; ok {
+		h.ServeHTTP(w, r)
+		return
+	}
+	http.NotFound(w, r)
 }

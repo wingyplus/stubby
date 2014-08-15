@@ -95,3 +95,34 @@ func TestNewMapHandler(t *testing.T) {
 		t.Errorf("expect <a>Hello</a> but was %s", recorder.Body.String())
 	}
 }
+
+func TestNotFoundHandler(t *testing.T) {
+	var stubs []Stub = []Stub{
+		Stub{
+			Request{
+				Method: "GET",
+				URL:    "/hello-world",
+			},
+			Response{
+				Status: 200,
+				Headers: map[string]string{
+					"content-type": "application/json",
+				},
+				Body: "Hello World",
+			},
+		},
+	}
+
+	var handler http.Handler = NewMapHandler(stubs)
+
+	var (
+		request, _ = http.NewRequest("GET", "http://localhost/notfound", nil)
+		recorder   = httptest.NewRecorder()
+	)
+
+	handler.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusNotFound {
+		t.Errorf("expect status 404 but was %d", recorder.Code)
+	}
+}
