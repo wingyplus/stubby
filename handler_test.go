@@ -21,7 +21,7 @@ func TestNewHandler(t *testing.T) {
 		}
 	)
 
-	var handler http.Handler = NewHandler(req, res)
+	var handler http.Handler = newHandler(req, res)
 
 	var (
 		request, _ = http.NewRequest("GET", "/hello-world", nil)

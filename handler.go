@@ -7,7 +7,7 @@ import (
 
 type mapHandler map[string]http.Handler
 
-func NewHandler(req Request, res Response) http.Handler {
+func newHandler(req Request, res Response) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for k, v := range res.Headers {
 			w.Header().Set(k, v)
@@ -19,7 +19,7 @@ func NewHandler(req Request, res Response) http.Handler {
 func NewMapHandler(stubs []Stub) http.Handler {
 	var m = make(mapHandler)
 	for _, stub := range stubs {
-		m[stub.Request.URL] = NewHandler(stub.Request, stub.Response)
+		m[stub.Request.URL] = newHandler(stub.Request, stub.Response)
 	}
 	return m
 }
