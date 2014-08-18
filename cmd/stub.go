@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/wingyplus/stubby"
 	"log"
-	"os"
 	"net/http"
 )
 
@@ -21,16 +20,10 @@ func init() {
 func main() {
 	flag.Parse()
 
-	f, err := os.Open(filename)
+	handler, err := stubby.NewStubbyHandler(filename)
 	if err != nil {
 		panic(err)
 	}
-
-	stubs, err := stubby.Parse(f)
-	if err != nil {
-		panic(err)
-	}
-	handler := stubby.NewMapHandler(stubs)
 
 	log.Printf("Listen on address %s", addr)
 	log.Fatal(http.ListenAndServe(addr, handler))
