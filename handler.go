@@ -2,16 +2,24 @@ package stubby
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/wingyplus/filtr"
+	"net/http"
 )
 
 type mapHandler map[string]http.Handler
 
 func allowedMethod(method string, h http.Handler) http.Handler {
-	if method == "POST" {
+	switch method {
+	case "GET":
+		return filtr.GET(h)
+	case "POST":
 		return filtr.POST(h)
+	case "PUT":
+		return filtr.PUT(h)
+	case "DELETE":
+		return filtr.DELETE(h)
 	}
+
 	return filtr.GET(h)
 }
 func newHandler(req Request, res Response) http.Handler {

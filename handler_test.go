@@ -127,7 +127,7 @@ func TestNotFoundHandler(t *testing.T) {
 	}
 }
 
-func TestHTTPMethodHandler(t *testing.T) {
+func TestHTTPMethodNotAllowedHandler(t *testing.T) {
 	var (
 		req = Request{
 			Method: "GET",
@@ -182,5 +182,37 @@ func TestHTTP_POST_Handler(t *testing.T) {
 
 	if recorder.Code != http.StatusOK {
 		t.Errorf("expect status ok")
+	}
+}
+
+func TestHTTPRequestMethodHandler(t *testing.T) {
+	var methods = []string{"PUT", "DELETE"}
+
+	for _, m := range methods {
+		var (
+			req = Request{
+				Method: m,
+				URL:    "/hello-world",
+			}
+			res = Response{
+				Status: 200,
+				Headers: map[string]string{
+					"content-type": "application/json",
+				},
+				Body: "Hello World",
+			}
+		)
+		var handler http.Handler = newHandler(req, res)
+
+		var (
+			request, _ = http.NewRequest(m, "/hello-world", nil)
+			recorder   = httptest.NewRecorder()
+		)
+
+		handler.ServeHTTP(recorder, request)
+
+		if recorder.Code != http.StatusOK {
+			t.Errorf("expect status ok but was %d", recorder.Code)
+		}
 	}
 }
