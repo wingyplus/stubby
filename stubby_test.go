@@ -1,10 +1,10 @@
 package stubby
 
 import (
-	"testing"
-	"net/http/httptest"
 	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
 func TestNewStubbyHandler(t *testing.T) {
