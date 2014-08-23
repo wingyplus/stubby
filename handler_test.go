@@ -126,3 +126,32 @@ func TestNotFoundHandler(t *testing.T) {
 		t.Errorf("expect status 404 but was %d", recorder.Code)
 	}
 }
+
+func TestHTTPMethodHandler(t *testing.T) {
+	var (
+		req = Request{
+			Method: "GET",
+			URL:    "/hello-world",
+		}
+		res = Response{
+			Status: 200,
+			Headers: map[string]string{
+				"content-type": "application/json",
+			},
+			Body: "Hello World",
+		}
+	)
+
+	var handler http.Handler = newHandler(req, res)
+
+	var (
+		request, _ = http.NewRequest("POST", "/hello-world", nil)
+		recorder   = httptest.NewRecorder()
+	)
+
+	handler.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expect status method not allowed")
+	}
+}
