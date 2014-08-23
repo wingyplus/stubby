@@ -8,11 +8,11 @@ import (
 
 type mapHandler map[string]http.Handler
 
-func allowedMethod(method string, f func(w http.ResponseWriter, r *http.Request)) http.Handler {
+func allowedMethod(method string, h http.Handler) http.Handler {
 	if method == "POST" {
-		return filtr.POST(f)
+		return filtr.POST(h)
 	}
-	return filtr.GET(f)
+	return filtr.GET(h)
 }
 func newHandler(req Request, res Response) http.Handler {
 	var handlerFunc = func(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +22,7 @@ func newHandler(req Request, res Response) http.Handler {
 		fmt.Fprintf(w, res.Body)
 	}
 
-	return allowedMethod(req.Method, handlerFunc)
+	return allowedMethod(req.Method, http.HandlerFunc(handlerFunc))
 }
 
 func NewMapHandler(stubs []Stub) http.Handler {
