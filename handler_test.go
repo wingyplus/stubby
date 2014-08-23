@@ -6,43 +6,6 @@ import (
 	"testing"
 )
 
-func TestNewHandler(t *testing.T) {
-	var (
-		req = Request{
-			Method: "GET",
-			URL:    "/hello-world",
-		}
-		res = Response{
-			Status: 200,
-			Headers: map[string]string{
-				"content-type": "application/json",
-			},
-			Body: "Hello World",
-		}
-	)
-
-	var handler http.Handler = newHandler(req, res)
-
-	var (
-		request, _ = http.NewRequest("GET", "/hello-world", nil)
-		recorder   = httptest.NewRecorder()
-	)
-
-	handler.ServeHTTP(recorder, request)
-
-	if recorder.Body.String() != "Hello World" {
-		t.Errorf("expect Hello World but was %s", recorder.Body.String())
-	}
-
-	if recorder.Code != http.StatusOK {
-		t.Errorf("expect status 200 but was %d", recorder.Code)
-	}
-
-	if recorder.Header().Get("Content-Type") != "application/json" {
-		t.Errorf("expect application/json but was %s", recorder.Header().Get("Content-Type"))
-	}
-}
-
 func TestNewMapHandler(t *testing.T) {
 	var stubs []Stub = []Stub{
 		Stub{
@@ -156,7 +119,7 @@ func TestHTTPMethodNotAllowedHandler(t *testing.T) {
 	}
 }
 
-func TestHTTPRequestMethodHandler(t *testing.T) {
+func TestNewHandler(t *testing.T) {
 	var methods = []string{"GET", "POST", "PUT", "DELETE"}
 
 	for _, m := range methods {
@@ -182,8 +145,26 @@ func TestHTTPRequestMethodHandler(t *testing.T) {
 
 		handler.ServeHTTP(recorder, request)
 
-		if recorder.Code != http.StatusOK {
-			t.Errorf("expect status ok but was %d", recorder.Code)
-		}
+		testResponseCodeOK(t, recorder.Code)
+		testContentType(t, recorder.Header().Get("Content-Type"))
+		testBodyString(t, recorder.Body.String())
+	}
+}
+
+func testResponseCodeOK(t *testing.T, code int) {
+	if code != http.StatusOK {
+		t.Errorf("expect status ok but was %d", code)
+	}
+}
+
+func testContentType(t *testing.T, contentType string) {
+	if contentType != "application/json" {
+		t.Errorf("expect application/json but was %s", contentType)
+	}
+}
+
+func testBodyString(t *testing.T, body string) {
+	if body != "Hello World" {
+		t.Errorf("expect Hello World but was %s", body)
 	}
 }
